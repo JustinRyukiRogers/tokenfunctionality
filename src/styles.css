@@ -1,0 +1,57 @@
+/* styles.css */
+
+/* Global font */
+body, html, .app-container {
+  font-family: 'Futura', sans-serif;
+}
+
+/* Header styling */
+.app-header {
+  background-color: #0e3b5c;
+  color: white;
+  padding: 20px;
+}
+
+/* Remove default body and html margins */
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+
+.app-header h1 {
+  margin: 0;
+  font-size: 2.5rem;  /* Adjust as needed */
+  /* Optionally, add text-shadow or letter spacing here */
+}
+
+/* Your existing tooltip styles and other global styles remain unchanged */
+.tooltip-container {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.tooltip-container .tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  background-color: #333;
+  color: #fff;
+  text-align: left;
+  padding: 5px;
+  border-radius: 3px;
+  position: absolute;
+  z-index: 1000;
+  left: 110%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 200px; /* Fixed width for tooltips */
+  white-space: normal;
+  word-wrap: break-word;
+  transition: opacity 0.3s;
+}
+
+.tooltip-container:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}

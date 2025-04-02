@@ -1,8 +1,17 @@
-/* styles.css */
-
 /* Global font */
 body, html, .app-container {
   font-family: 'Futura', sans-serif;
+}
+
+/* Remove default margins */
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+/* App container for content */
+.app-container {
+  margin: 20px;
 }
 
 /* Header styling */
@@ -10,22 +19,36 @@ body, html, .app-container {
   background-color: #0e3b5c;
   color: white;
   padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-/* Remove default body and html margins */
-html, body {
+/* Header text container: aligns title and subtitle on the same line */
+.header-text {
+  display: flex;
+  align-items: baseline;
+}
+
+/* Header title styling */
+.header-text h1 {
   margin: 0;
-  padding: 0;
+  font-size: 2.5rem;
+  font-weight: 700;
 }
 
-
-.app-header h1 {
-  margin: 0;
-  font-size: 2.5rem;  /* Adjust as needed */
-  /* Optionally, add text-shadow or letter spacing here */
+/* Header subtitle styling */
+.header-text span {
+  font-size: 1rem;
+  margin-left: 10px;
 }
 
-/* Your existing tooltip styles and other global styles remain unchanged */
+/* Header link styling: image */
+.header-link img {
+  height: 60px;
+}
+
+/* Tooltip styles */
 .tooltip-container {
   position: relative;
   display: inline-block;

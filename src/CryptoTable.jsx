@@ -31,7 +31,30 @@ const renderAsset = (value) => {
 // ---------------------------------------------------------------------
 // Helper: Render a tick if there is text; otherwise render nothing.
 const renderTickCross = (value) => {
-  if (typeof value === 'string' && value.trim().length > 0) {
+  if (typeof value !== 'string' || value.trim().length === 0) {
+    return <span>{''}</span>; // Blank if empty or not a string.
+  }
+  
+  if (value.includes('|')) {
+    const [symbol, tooltip] = value.split('|').map(s => s.trim());
+    // If the symbol is "-", display "-" with tooltip; otherwise, display tick.
+    if (symbol === '-') {
+      return (
+        <span className="tooltip-container">
+          {'→'}
+          <span className="tooltip-text">{tooltip}</span>
+        </span>
+      );
+    } else {
+      return (
+        <span className="tooltip-container">
+          {'\u2713'}
+          <span className="tooltip-text">{tooltip}</span>
+        </span>
+      );
+    }
+  } else {
+    // No pipe: simply display a tick with the entire value as tooltip.
     return (
       <span className="tooltip-container">
         {'\u2713'}
@@ -39,8 +62,8 @@ const renderTickCross = (value) => {
       </span>
     );
   }
-  return <span>{''}</span>;
 };
+
 
 // ---------------------------------------------------------------------
 // Custom filter function: When filterValue is true, only include rows with truthy values.
@@ -57,17 +80,17 @@ function truthyFilterFn(row, columnId, filterValue) {
 const flatColumns = [
   {
     id: 'name',
-    header: 'Name',
+    header: 'Project Name',
     accessorKey: 'name',
     cell: ({ getValue }) => getValue(),
-    headerTooltip: 'Full name of the asset',
+    headerTooltip: 'Full name of the project',
   },
   {
     id: 'token',
     header: 'Token',
     accessorKey: 'token',
     cell: ({ getValue }) => renderAsset(getValue()),
-    headerTooltip: 'Token symbol (e.g., BTC)',
+    headerTooltip: 'Token ticker (e.g., BTC)',
   },
   {
     id: 'payments.endogenous',
@@ -75,7 +98,7 @@ const flatColumns = [
     header: 'Endo',
     accessorKey: 'payments.endogenous',
     cell: ({ getValue }) => renderTickCross(getValue()),
-    headerTooltip: 'Internal payment metrics',
+    headerTooltip: 'Reliance of native system payments on token as unit of account and medium of exchange.',
     filterFn: truthyFilterFn,
   },
   {
@@ -84,7 +107,7 @@ const flatColumns = [
     header: 'Exo',
     accessorKey: 'payments.exogenous',
     cell: ({ getValue }) => renderTickCross(getValue()),
-    headerTooltip: 'External payment metrics',
+    headerTooltip: 'Token is used as a unit of account and medium of exchange in external environments, this includes other dApps, blockchains, extensions of blockchains, such as layer two networks, and the real world.',
     filterFn: truthyFilterFn,
   },
   {
@@ -93,7 +116,7 @@ const flatColumns = [
     header: 'Endo',
     accessorKey: 'collateral.endogenous',
     cell: ({ getValue }) => renderTickCross(getValue()),
-    headerTooltip: 'Internal collateral metrics',
+    headerTooltip: 'Token allows the holder to acquire financial leverage within a system or to cryptoeconomically secure the native system.',
     filterFn: truthyFilterFn,
   },
   {
@@ -102,7 +125,7 @@ const flatColumns = [
     header: 'Exo',
     accessorKey: 'collateral.exogenous',
     cell: ({ getValue }) => renderTickCross(getValue()),
-    headerTooltip: 'External collateral metrics',
+    headerTooltip: 'Token is considered a general store of value and thus allows the holder to acquire financial leverage from an external system or to cryptoeconomically secure an external system.',
     filterFn: truthyFilterFn,
   },
   {
@@ -111,7 +134,7 @@ const flatColumns = [
     header: 'Endo',
     accessorKey: 'contribution.endogenous',
     cell: ({ getValue }) => renderTickCross(getValue()),
-    headerTooltip: 'Internal contribution metrics',
+    headerTooltip: 'Right to perform work or provide resources for the native system.',
     filterFn: truthyFilterFn,
   },
   {
@@ -120,7 +143,7 @@ const flatColumns = [
     header: 'Exo',
     accessorKey: 'contribution.exogenous',
     cell: ({ getValue }) => renderTickCross(getValue()),
-    headerTooltip: 'External contribution metrics',
+    headerTooltip: 'Right to perform work or provide resources for an external system.',
     filterFn: truthyFilterFn,
   },
   {
@@ -129,7 +152,7 @@ const flatColumns = [
     header: 'Endo',
     accessorKey: 'membership.endogenous',
     cell: ({ getValue }) => renderTickCross(getValue()),
-    headerTooltip: 'Internal membership metrics',
+    headerTooltip: 'Access to features and benefits provided by system or community.',
     filterFn: truthyFilterFn,
   },
   {
@@ -138,7 +161,7 @@ const flatColumns = [
     header: 'Exo',
     accessorKey: 'membership.exogenous',
     cell: ({ getValue }) => renderTickCross(getValue()),
-    headerTooltip: 'External membership metrics',
+    headerTooltip: 'Access to features and benefits provided by external parties/systems.',
     filterFn: truthyFilterFn,
   },
   {
@@ -147,7 +170,7 @@ const flatColumns = [
     header: 'Endo',
     accessorKey: 'governance.endogenous',
     cell: ({ getValue }) => renderTickCross(getValue()),
-    headerTooltip: 'Internal governance metrics',
+    headerTooltip: 'System governance rights exercised by the native token.',
     filterFn: truthyFilterFn,
   },
   {
@@ -156,7 +179,7 @@ const flatColumns = [
     header: 'Exo',
     accessorKey: 'governance.exogenous',
     cell: ({ getValue }) => renderTickCross(getValue()),
-    headerTooltip: 'External governance metrics',
+    headerTooltip: 'External system governance rights exercised by the native token.',
     filterFn: truthyFilterFn,
   },
   {
@@ -165,7 +188,7 @@ const flatColumns = [
     header: 'Endo',
     accessorKey: 'valueredistribution.endogenous',
     cell: ({ getValue }) => renderTickCross(getValue()),
-    headerTooltip: 'Internal value distribution metrics',
+    headerTooltip: 'Redistribution of native system value to token holders.',
     filterFn: truthyFilterFn,
   },
   {
@@ -174,7 +197,7 @@ const flatColumns = [
     header: 'Exo',
     accessorKey: 'valueredistribution.exogenous',
     cell: ({ getValue }) => renderTickCross(getValue()),
-    headerTooltip: 'External value distribution metrics',
+    headerTooltip: 'Redistribution of value from external systems to token holders.',
     filterFn: truthyFilterFn,
   },
   {
@@ -183,7 +206,7 @@ const flatColumns = [
     header: 'Endo',
     accessorKey: 'assetownership.endogenous',
     cell: ({ getValue }) => renderTickCross(getValue()),
-    headerTooltip: 'Internal ownership metrics',
+    headerTooltip: 'The token is a claim on assets that are controlled or managed by the system.',
     filterFn: truthyFilterFn,
   },
   {
@@ -192,7 +215,7 @@ const flatColumns = [
     header: 'Exo',
     accessorKey: 'assetownership.exogenous',
     cell: ({ getValue }) => renderTickCross(getValue()),
-    headerTooltip: 'External ownership metrics',
+    headerTooltip: 'The token is a claim on an asset other than that controlled or managed by the system.',
     filterFn: truthyFilterFn,
   },
 ];
@@ -228,20 +251,26 @@ enhancedColumns.forEach(col => {
 // Grouped columns: The bottom header cells are clickable to toggle filtering on that column.
 // When a filter is active, " (Filtered)" is appended.
 function CustomTableHeader({ columns, table }) {
-  // Separate ungrouped and grouped columns.
+  // Separate ungrouped columns (those without a group) and grouped columns.
   const ungroupedColumns = columns.filter(col => !col.group);
   const groupedColumns = columns.filter(col => col.group);
 
   const topHeaderCells = [];
   const bottomHeaderCells = [];
 
-  // Render ungrouped columns.
+  // Render ungrouped columns with rowSpan=2.
   ungroupedColumns.forEach(col => {
     let width;
     if (col.id === 'name') {
       width = `${NAME_WIDTH}px`;
     } else if (col.id === 'token') {
       width = `${TOKEN_WIDTH}px`;
+    }
+    // Determine current sorting state for this column.
+    const currentSort = table.getState().sorting.find(s => s.id === col.id);
+    let sortIndicator = '';
+    if (currentSort) {
+      sortIndicator = currentSort.desc ? '' : '';
     }
     topHeaderCells.push(
       <th
@@ -254,10 +283,20 @@ function CustomTableHeader({ columns, table }) {
           textAlign: 'center',
           width: width,
           ...(col.id === 'name' && { borderRight: '3px solid #333' }),
+          cursor: 'pointer',
+        }}
+        onClick={() => {
+          // Toggle sorting for ungrouped columns.
+          const currentSort = table.getState().sorting.find(s => s.id === col.id);
+          if (currentSort) {
+            table.setSorting([{ id: col.id, desc: !currentSort.desc }]);
+          } else {
+            table.setSorting([{ id: col.id, desc: false }]);
+          }
         }}
       >
         <span className="tooltip-container">
-          {col.header}
+          {col.header}{sortIndicator}
           <span className="tooltip-text">
             {col.headerTooltip ? col.headerTooltip : col.accessorKey}
           </span>
@@ -266,7 +305,7 @@ function CustomTableHeader({ columns, table }) {
     );
   });
 
-  // Render top header row for grouped columns.
+  // Build top header row for grouped columns.
   let i = 0;
   while (i < groupedColumns.length) {
     const currentGroup = groupedColumns[i].group;
@@ -294,13 +333,9 @@ function CustomTableHeader({ columns, table }) {
     i = j;
   }
 
-  // Render bottom header row for grouped columns with filtering toggles.
-  // Bottom header row: For each grouped column, render the subheader with a tooltip.
-  // Clicking on a subheader toggles filtering on that column.
-  // When a filter is active, a circle icon is displayed.
+  // Build bottom header row: for each grouped column, render its subheader with a tooltip and filtering toggle.
   groupedColumns.forEach(col => {
     const count = groupCounts[col.group] || 1;
-    // Retrieve current filter value from the table.
     const currentFilter = table.getColumn(col.id).getFilterValue();
     const filterIndicator = currentFilter ? (
       <span className="filter-indicator">&#9679;</span>
@@ -317,7 +352,7 @@ function CustomTableHeader({ columns, table }) {
           cursor: 'pointer',
         }}
         onClick={() => {
-          // Toggle filter: if a filter is active, remove it; otherwise, set it to true.
+          // Toggle filter for this column.
           const current = table.getColumn(col.id).getFilterValue();
           table.getColumn(col.id).setFilterValue(current ? undefined : true);
         }}
@@ -332,7 +367,6 @@ function CustomTableHeader({ columns, table }) {
     );
   });
 
-
   return (
     <thead>
       <tr>{topHeaderCells}</tr>
@@ -340,6 +374,7 @@ function CustomTableHeader({ columns, table }) {
     </thead>
   );
 }
+
 
 // ---------------------------------------------------------------------
 // Main table component.

@@ -5,27 +5,21 @@ import CryptoTable from './CryptoTable';
 function App() {
   return (
     <>
-      <header
-        style={{
-          backgroundColor: '#0e3b5c',
-          color: 'white',
-          padding: '20px',
-          textAlign: 'left',
-          // Remove any margin here so the background goes edge-to-edge.
-        }}
-      >
-        <h1
-          style={{
-            fontFamily: 'Futura, sans-serif',
-            fontWeight: '700',
-            fontSize: '2.5rem',
-            margin: 0,
-          }}
+      <header className="app-header">
+        <div className="header-text">
+          <h1>Token Functionality Dashboard</h1>
+          <span>by Just Cryptoeconomics</span>
+        </div>
+        <a 
+          className="header-link"
+          href="https://justcryptoeconomics.com/" 
+          target="_blank" 
+          rel="noopener noreferrer"
         >
-          Token Functionality Dashboard
-        </h1>
+          <img src="https://drive.google.com/uc?export=view&id=1I9025nO4TB-bob2YlRjhp-jpa1z4VW6M" />
+        </a>
       </header>
-      <div style={{ margin: '20px', fontFamily: 'Futura, sans-serif' }}>
+      <div className="app-container">
         <CryptoTable />
       </div>
     </>

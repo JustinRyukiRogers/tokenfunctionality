@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import Papa from 'papaparse';
 import {
   useReactTable,
@@ -9,11 +9,24 @@ import {
 } from '@tanstack/react-table';
 
 // Fixed width constants.
-const NAME_WIDTH = 150;  
-const TOKEN_WIDTH = 100; 
-const GROUP_WIDTH = 150; 
+const PROJECT_WIDTH = 300; // Increased width for the combined column
+const GROUP_WIDTH = 150;
 
-// ---------------------------------------------------------------------
+// Helper: Render tooltip text with line breaks (splitting on literal "\n")
+const renderTooltipText = (text) => {
+  const lines = text.split('\\n'); // Change to '\n' if your CSV contains actual newlines
+  return (
+    <>
+      {lines.map((line, index) => (
+        <React.Fragment key={index}>
+          {line}
+          {index < lines.length - 1 && <br />}
+        </React.Fragment>
+      ))}
+    </>
+  );
+};
+
 // Helper: Render an asset value with tooltip if it contains a pipe.
 const renderAsset = (value) => {
   if (typeof value === 'string' && value.includes('|')) {
@@ -21,14 +34,13 @@ const renderAsset = (value) => {
     return (
       <span className="tooltip-container">
         {display}
-        <span className="tooltip-text">{tooltip}</span>
+        <span className="tooltip-text">{renderTooltipText(tooltip)}</span>
       </span>
     );
   }
   return value;
 };
 
-// ---------------------------------------------------------------------
 // Helper: Render a tick if there is text; otherwise render nothing.
 const renderTickCross = (value) => {
   if (typeof value !== 'string' || value.trim().length === 0) {
@@ -37,37 +49,35 @@ const renderTickCross = (value) => {
   
   if (value.includes('|')) {
     const [symbol, tooltip] = value.split('|').map(s => s.trim());
-    // If the symbol is "-", display "-" with tooltip; otherwise, display tick.
     if (symbol === '-') {
       return (
         <span className="tooltip-container">
-          {'→'}
-          <span className="tooltip-text">{tooltip}</span>
+          {'-'}
+          <span className="tooltip-text">{renderTooltipText(tooltip)}</span>
         </span>
       );
     } else {
       return (
         <span className="tooltip-container">
           {'\u2713'}
-          <span className="tooltip-text">{tooltip}</span>
+          <span className="tooltip-text">{renderTooltipText(tooltip)}</span>
         </span>
       );
     }
   } else {
-    // No pipe: simply display a tick with the entire value as tooltip.
     return (
       <span className="tooltip-container">
         {'\u2713'}
-        <span className="tooltip-text">{value}</span>
+        <span className="tooltip-text">{renderTooltipText(value)}</span>
       </span>
     );
   }
 };
 
-
-// ---------------------------------------------------------------------
 // Custom filter function: When filterValue is true, only include rows with truthy values.
+// Modification: Always include pinned rows.
 function truthyFilterFn(row, columnId, filterValue) {
+  if (row.original.pinned) return true; // NEW: pinned rows bypass filtering
   const cellValue = row.getValue(columnId);
   if (filterValue) {
     return typeof cellValue === 'string' && cellValue.trim().length > 0;
@@ -75,23 +85,34 @@ function truthyFilterFn(row, columnId, filterValue) {
   return true;
 }
 
-// ---------------------------------------------------------------------
 // Flat columns definitions.
+// Replace separate "Project Name" and "Token" columns with one combined column.
 const flatColumns = [
   {
-    id: 'name',
-    header: 'Project Name',
-    accessorKey: 'name',
-    cell: ({ getValue }) => getValue(),
-    headerTooltip: 'Full name of the project',
-  },
-  {
-    id: 'token',
-    header: 'Token',
-    accessorKey: 'token',
-    cell: ({ getValue }) => renderAsset(getValue()),
-    headerTooltip: 'Token ticker (e.g., BTC)',
-  },
+    id: 'project',
+    header: 'Project (Token)',
+    // Return a combined string that sorting will use (here we use only the project name)
+    accessorFn: row => row.name.toLowerCase(),
+    cell: ({ row }) => {
+      const { name, token } = row.original;
+      return (
+        <div style={{ textAlign: 'left' }}>
+          <span style={{ fontWeight: 'bold' }}>{name}</span>{' '}
+          <span style={{ color: 'grey', fontSize: '0.85rem' }}>{token}</span>
+        </div>
+      );
+    },
+    headerTooltip: 'Project name and token ticker',
+    filterFn: (row, columnId, filterValue) => {
+      const { name, token } = row.original;
+      const combined = `${name} ${token}`.toLowerCase();
+      return combined.includes(filterValue.toLowerCase());
+    },
+    // Optionally, you can add a sorting function if you need custom behavior.
+    // For simple alphanumeric sorting by name, the accessorFn above is sufficient.
+  }
+  ,
+  // ... The rest of your grouped columns remain unchanged:
   {
     id: 'payments.endogenous',
     group: 'Payments',
@@ -220,7 +241,6 @@ const flatColumns = [
   },
 ];
 
-// ---------------------------------------------------------------------
 // Enhance columns: Mark first and last column in each group.
 function getEnhancedColumns(columns) {
   return columns.map((col, index, arr) => {
@@ -236,7 +256,6 @@ function getEnhancedColumns(columns) {
 }
 const enhancedColumns = getEnhancedColumns(flatColumns);
 
-// ---------------------------------------------------------------------
 // Compute groupCounts: Number of subcolumns per group.
 const groupCounts = {};
 enhancedColumns.forEach(col => {
@@ -245,28 +264,27 @@ enhancedColumns.forEach(col => {
   }
 });
 
-// ---------------------------------------------------------------------
 // Custom header renderer: Two header rows with filtering toggles.
-// Ungrouped columns ("Name" and "Token") are rendered with rowSpan=2.
+// Ungrouped columns ("Project (Token)") are rendered with rowSpan=2.
 // Grouped columns: The bottom header cells are clickable to toggle filtering on that column.
-// When a filter is active, " (Filtered)" is appended.
+// When a filter is active, a dot indicator is displayed.
 function CustomTableHeader({ columns, table }) {
-  // Separate ungrouped columns (those without a group) and grouped columns.
   const ungroupedColumns = columns.filter(col => !col.group);
   const groupedColumns = columns.filter(col => col.group);
 
   const topHeaderCells = [];
   const bottomHeaderCells = [];
 
-  // Render ungrouped columns with rowSpan=2.
+  // Render ungrouped columns.
   ungroupedColumns.forEach(col => {
     let width;
-    if (col.id === 'name') {
+    if (col.id === 'project') {
+      width = `${PROJECT_WIDTH}px`;
+    } else if (col.id === 'name') {
       width = `${NAME_WIDTH}px`;
     } else if (col.id === 'token') {
       width = `${TOKEN_WIDTH}px`;
     }
-    // Determine current sorting state for this column.
     const currentSort = table.getState().sorting.find(s => s.id === col.id);
     let sortIndicator = '';
     if (currentSort) {
@@ -280,20 +298,26 @@ function CustomTableHeader({ columns, table }) {
           padding: '12px 8px',
           border: '2px solid #333',
           backgroundColor: '#f2f2f2',
-          textAlign: 'center',
+          textAlign: 'left',
           width: width,
-          ...(col.id === 'name' && { borderRight: '3px solid #333' }),
+          // Ensure the project column has a left border
+          ...(col.id === 'project' && { borderLeft: '2px solid #333', borderRight: '3px solid #333' }),
           cursor: 'pointer',
         }}
         onClick={() => {
-          // Toggle sorting for ungrouped columns.
           const currentSort = table.getState().sorting.find(s => s.id === col.id);
-          if (currentSort) {
-            table.setSorting([{ id: col.id, desc: !currentSort.desc }]);
-          } else {
+          if (!currentSort) {
+            // Not sorted: sort ascending.
             table.setSorting([{ id: col.id, desc: false }]);
+          } else if (currentSort.desc === false) {
+            // Currently ascending: change to descending.
+            table.setSorting([{ id: col.id, desc: true }]);
+          } else {
+            // Currently descending: clear sorting (unsorted).
+            table.setSorting([]);
           }
         }}
+        
       >
         <span className="tooltip-container">
           {col.header}{sortIndicator}
@@ -333,7 +357,7 @@ function CustomTableHeader({ columns, table }) {
     i = j;
   }
 
-  // Build bottom header row: for each grouped column, render its subheader with a tooltip and filtering toggle.
+  // Build bottom header row for grouped columns.
   groupedColumns.forEach(col => {
     const count = groupCounts[col.group] || 1;
     const currentFilter = table.getColumn(col.id).getFilterValue();
@@ -352,7 +376,6 @@ function CustomTableHeader({ columns, table }) {
           cursor: 'pointer',
         }}
         onClick={() => {
-          // Toggle filter for this column.
           const current = table.getColumn(col.id).getFilterValue();
           table.getColumn(col.id).setFilterValue(current ? undefined : true);
         }}
@@ -375,14 +398,14 @@ function CustomTableHeader({ columns, table }) {
   );
 }
 
-
-// ---------------------------------------------------------------------
-// Main table component.
+// Main table component with multi-row pinning.
 function CryptoTable() {
   const [data, setData] = useState([]);
   const [globalFilter, setGlobalFilter] = useState('');
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
+  // Change to an array for multiple pinned rows
+  const [pinnedRowIds, setPinnedRowIds] = useState([]);
 
   useEffect(() => {
     fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vT8W60RuKy6njMwzDc6zhe7JBl5QuMZ-lTZRDfoj4YvHAG7c2GZlAhAfggRqpN-bziMmfft8I3t27Xa/pub?gid=0&single=true&output=csv')
@@ -392,9 +415,12 @@ function CryptoTable() {
           header: true,
           skipEmptyLines: true,
           complete: (results) => {
-            const nestedData = results.data.map(row => ({
+            const nestedData = results.data.map((row, index) => ({
+              id: index.toString(),
               name: row.name,
               token: row.token,
+              // NEW: Add pinned property to each row (default false)
+              pinned: false,
               payments: {
                 endogenous: row["payments.endogenous"],
                 exogenous: row["payments.exogenous"],
@@ -432,9 +458,11 @@ function CryptoTable() {
       .catch(error => console.error('Error fetching CSV:', error));
   }, []);
 
+  const columns = useMemo(() => enhancedColumns, []);
+
   const table = useReactTable({
     data,
-    columns: enhancedColumns,
+    columns,
     state: {
       globalFilter,
       sorting,
@@ -448,6 +476,13 @@ function CryptoTable() {
     getSortedRowModel: getSortedRowModel(),
   });
 
+  // Order rows: sort so that pinned rows (in data) always appear at the top.
+  const allRows = table.getRowModel().rows;
+  const orderedRows = [...allRows].sort((a, b) => {
+    if (a.original.pinned === b.original.pinned) return 0;
+    return a.original.pinned ? -1 : 1;
+  });
+
   const baseTdStyle = {
     padding: '12px 8px',
     border: '1px solid #ddd',
@@ -456,14 +491,13 @@ function CryptoTable() {
 
   const renderCell = (cell) => {
     const cellStyle = { ...baseTdStyle };
-    if (cell.column.id === 'name') {
+    
+    // For the combined project column:
+    if (cell.column.id === 'project') {
+      cellStyle.width = `${PROJECT_WIDTH}px`;
       cellStyle.borderLeft = '2px solid #333';
-      cellStyle.width = `${NAME_WIDTH}px`;
-      cellStyle.borderRight = '3px solid #333';
     }
-    if (cell.column.id === 'token') {
-      cellStyle.width = `${TOKEN_WIDTH}px`;
-    }
+    
     if (cell.column.columnDef.group) {
       const count = groupCounts[cell.column.columnDef.group] || 1;
       cellStyle.width = `${GROUP_WIDTH / count}px`;
@@ -474,6 +508,7 @@ function CryptoTable() {
     if (cell.column.columnDef.lastInGroup) {
       cellStyle.borderRight = '2px solid #333';
     }
+    
     return (
       <td key={cell.id} style={cellStyle}>
         {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -498,14 +533,28 @@ function CryptoTable() {
           marginBottom: '10px',
           padding: '8px',
           fontSize: '16px',
-          width: '300px', // Fixed width instead of 100%
+          width: '300px',
         }}
       />
       <table style={tableStyle}>
-        <CustomTableHeader columns={enhancedColumns} table={table} />
+        <CustomTableHeader columns={columns} table={table} />
         <tbody>
-          {table.getRowModel().rows.map(row => (
-            <tr key={row.id}>
+          {orderedRows.map(row => (
+            <tr 
+              key={row.id}
+              onClick={() => {
+                // Toggle pinned state on click by updating data.
+                setData(prevData =>
+                  prevData.map(r =>
+                    r.id === row.original.id ? { ...r, pinned: !r.pinned } : r
+                  )
+                );
+              }}
+              style={{
+                cursor: 'pointer',
+                backgroundColor: row.original.pinned ? '#fffae6' : 'inherit',
+              }}
+            >
               {row.getVisibleCells().map(renderCell)}
             </tr>
           ))}

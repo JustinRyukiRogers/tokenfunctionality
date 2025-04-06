@@ -16,7 +16,7 @@ function App() {
           target="_blank" 
           rel="noopener noreferrer"
         >
-          <img src="https://drive.google.com/uc?export=view&id=1I9025nO4TB-bob2YlRjhp-jpa1z4VW6M" />
+          <img src="https://images.squarespace-cdn.com/content/v1/65b95c32618766635b132cf0/bbba13c7-6b38-4828-9a38-a8f3a592d20f/fotor-2024021221444.png?format=1500w" />
         </a>
       </header>
       <div className="app-container">

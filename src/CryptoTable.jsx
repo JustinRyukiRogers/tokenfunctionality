@@ -525,44 +525,41 @@ function CryptoTable() {
   };
 
   return (
-    <div>
-      <input
-        value={globalFilter}
-        onChange={e => setGlobalFilter(e.target.value)}
-        placeholder="Search token..."
-        style={{
-          marginBottom: '10px',
-          padding: '8px',
-          fontSize: '16px',
-          width: '300px',
-        }}
-      />
-      <table style={tableStyle}>
-        <CustomTableHeader columns={columns} table={table} />
-        <tbody>
-          {orderedRows.map(row => (
-            <tr 
-              key={row.id}
-              onClick={() => {
-                // Toggle pinned state on click by updating data.
-                setData(prevData =>
-                  prevData.map(r =>
-                    r.id === row.original.id ? { ...r, pinned: !r.pinned } : r
-                  )
-                );
-              }}
-              style={{
-                cursor: 'pointer',
-                backgroundColor: row.original.pinned ? '#fffae6' : 'inherit',
-              }}
-            >
-              {row.getVisibleCells().map(renderCell)}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+  <div>
+    <input
+      className="search-bar"
+      value={globalFilter}
+      onChange={e => setGlobalFilter(e.target.value)}
+      placeholder="Search token..."
+    />
+    <table style={tableStyle}>
+      <CustomTableHeader columns={columns} table={table} />
+      <tbody>
+        {orderedRows.map(row => (
+          <tr 
+            key={row.id}
+            onClick={() => {
+              // Toggle pinned state on click by updating data.
+              setData(prevData =>
+                prevData.map(r =>
+                  r.id === row.original.id ? { ...r, pinned: !r.pinned } : r
+                )
+              );
+            }}
+            style={{
+              cursor: 'pointer',
+              backgroundColor: row.original.pinned ? '#fffae6' : 'inherit',
+            }}
+          >
+            {row.getVisibleCells().map((cell, index, arr) =>
+              renderCell(cell, index === arr.length - 1)
+            )}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
 }
 
 export default CryptoTable;

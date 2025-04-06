@@ -48,6 +48,12 @@ html, body {
   height: 60px;
 }
 
+.hourglass {
+  filter: grayscale(100%) contrast(10%);
+  font-size: 14px; /* Adjust font-size if needed */
+}
+
+
 /* Tooltip styles */
 .tooltip-container {
   position: relative;

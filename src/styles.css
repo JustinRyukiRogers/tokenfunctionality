@@ -94,7 +94,7 @@ html, body {
 
 /* Hourglass styling (if used) */
 .hourglass {
-  filter: grayscale(100%) contrast(200%);
+  filter: grayscale(100%) contrast(20%);
   font-size: 14px;
 }
 

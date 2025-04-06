@@ -52,11 +52,12 @@ const renderTickCross = (value) => {
     if (symbol === '-') {
       return (
         <span className="tooltip-container">
-          {'-'}
+          <span className="hourglass">{'\u231B'}</span>
           <span className="tooltip-text">{renderTooltipText(tooltip)}</span>
         </span>
       );
-    } else {
+    }
+     else {
       return (
         <span className="tooltip-container">
           {'\u2713'}

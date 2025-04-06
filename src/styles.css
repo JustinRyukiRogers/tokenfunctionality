@@ -1,4 +1,9 @@
-/* Global font */
+/* Global Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Global font – using Futura (or adjust to your preference) */
 body, html, .app-container {
   font-family: 'Futura', sans-serif;
 }
@@ -9,22 +14,25 @@ html, body {
   padding: 0;
 }
 
-/* App container for content */
-.app-container {
-  margin: 20px;
-}
-
-/* Header styling */
+/* Fixed header: stays at top */
 .app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
   background-color: #0e3b5c;
   color: white;
-  padding: 20px;
+  padding: 30px; /* Increased padding */
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-/* Header text container: aligns title and subtitle on the same line */
+
+/* Header content is optional if you want to wrap inner items, but not required if layout is simple */
+
+/* Header text container: aligns title and subtitle on one line */
 .header-text {
   display: flex;
   align-items: baseline;
@@ -45,14 +53,15 @@ html, body {
 
 /* Header link styling: image */
 .header-link img {
-  height: 60px;
+  height: 75px;
 }
 
-.hourglass {
-  filter: grayscale(100%) contrast(10%);
-  font-size: 14px; /* Adjust font-size if needed */
+/* App container for content */
+.app-container {
+  margin: 160px 20px 20px; /* Increase top margin to account for taller header */
+  max-width: 1200px;
+  padding: 0 10px;
 }
-
 
 /* Tooltip styles */
 .tooltip-container {
@@ -74,7 +83,7 @@ html, body {
   left: 110%;
   top: 50%;
   transform: translateY(-50%);
-  width: 200px; /* Fixed width for tooltips */
+  width: 200px;
   white-space: normal;
   word-wrap: break-word;
   transition: opacity 0.3s;
@@ -83,4 +92,37 @@ html, body {
 .tooltip-container:hover .tooltip-text {
   visibility: visible;
   opacity: 1;
+}
+
+/* Hourglass styling (if used) */
+.hourglass {
+  filter: grayscale(100%) contrast(200%);
+  font-size: 14px;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 600px) {
+  .app-header {
+    /* Always keep header in a row so text stays on left and image on right */
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+  }
+  
+  .header-text h1 {
+    font-size: 1.8rem;
+  }
+  
+  .header-text span {
+    font-size: 0.9rem;
+    margin-left: 10px;
+  }
+  
+  .app-container {
+    margin: 80px 10px 10px;
+  }
+  
+  table {
+    font-size: 0.85rem;
+  }
 }

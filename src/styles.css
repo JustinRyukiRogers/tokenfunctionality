@@ -21,16 +21,15 @@ html, body {
   left: 0;
   width: 100%;
   z-index: 1000;
-  background-color: #0e3b5c;
+  background: linear-gradient(135deg, #0a3f6a, #0e3b5c ); /* subtle gradient */
   color: white;
-  padding: 30px; /* Increased padding */
+  padding: 30px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);  /* subtle shadow for depth */
 }
 
-
-/* Header content is optional if you want to wrap inner items, but not required if layout is simple */
 
 /* Header text container: aligns title and subtitle on one line */
 .header-text {
@@ -88,7 +87,6 @@ html, body {
   word-wrap: break-word;
   transition: opacity 0.3s;
 }
-
 .tooltip-container:hover .tooltip-text {
   visibility: visible;
   opacity: 1;
@@ -96,14 +94,66 @@ html, body {
 
 /* Hourglass styling (if used) */
 .hourglass {
-  filter: grayscale(100%) contrast(20%);
+  filter: grayscale(100%) contrast(200%);
   font-size: 14px;
+}
+
+/* Table styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: inherit;
+  border-bottom: 2px solid #333;
+}
+
+td, th {
+  padding: 12px 8px;
+  border: 1px solid #ddd;
+  text-align: center;
+  overflow: visible;
+}
+
+/* Hover effect for table rows */
+tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+/* Styling for combined project column cells */
+td.project-cell {
+  width: 300px;  /* Fixed width for project column */
+  border-left: 2px solid #333;
+  text-align: left;
+}
+
+/* Adjust tooltip in last cell so it appears to the left */
+.last-cell .tooltip-container .tooltip-text {
+  left: auto !important;
+  right: 110% !important;
+  z-index: 10000;
+}
+
+/* Search bar styling */
+.search-bar {
+  width: 500px;
+  padding: 10px 15px;
+  font-size: 16px;
+  margin-bottom: 10px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  background: #f9f9f9;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.search-bar:focus {
+  border-color: #0e3b5c;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Responsive adjustments for mobile */
 @media (max-width: 600px) {
   .app-header {
-    /* Always keep header in a row so text stays on left and image on right */
     flex-direction: row;
     align-items: center;
     padding: 10px;
@@ -125,4 +175,22 @@ html, body {
   table {
     font-size: 0.85rem;
   }
+}
+
+.search-bar {
+  width: 500px;
+  padding: 10px 15px;
+  font-size: 16px;
+  margin-bottom: 10px;
+  border: 2px solid 0e3b5;
+  border-radius: 8px;
+  outline: none;
+  background: #f9f9f9;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.search-bar:focus {
+  border-color: #0e3b5c;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }

@@ -5,7 +5,10 @@
 
 /* Global font – using Futura (or adjust to your preference) */
 body, html, .app-container {
-  font-family: 'Futura', sans-serif;
+  font-family: "Raleway", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400; /* Regular */
+  font-style: normal;
 }
 
 /* Remove default margins */

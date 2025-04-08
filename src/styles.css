@@ -4,7 +4,7 @@
 }
 
 /* Global font – using Futura (or adjust to your preference) */
-body, html, .app-container {
+body, html, .app-container, .header-right {
   font-family: "Raleway", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400; /* Regular */
@@ -24,9 +24,9 @@ html, body {
   left: 0;
   width: 100%;
   z-index: 1000;
-  background: linear-gradient(135deg, #0a3f6a, #0e3b5c ); /* subtle gradient */
+  background: linear-gradient(135deg,#0e3b5c, #0a3f6a  ); /* subtle gradient */
   color: white;
-  padding: 30px;
+  padding: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -43,7 +43,7 @@ html, body {
 /* Header title styling */
 .header-text h1 {
   margin: 0;
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
 }
 
@@ -56,6 +56,20 @@ html, body {
 /* Header link styling: image */
 .header-link img {
   height: 75px;
+  margin-left: 5px;
+
+}
+
+
+/* Header Learn More button */
+.header-learn-more {
+  font-size: 1rem;
+  color: white;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-right: 5px;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 /* App container for content */
@@ -196,4 +210,16 @@ td.project-cell {
   border-color: #0e3b5c;
   background: #fff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.page-title {
+  margin-top: 160px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.page-title h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
 }

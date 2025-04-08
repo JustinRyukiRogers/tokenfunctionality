@@ -115,42 +115,6 @@ const flatColumns = [
   ,
   // ... The rest of your grouped columns remain unchanged:
   {
-    id: 'payments.endogenous',
-    group: 'Payments',
-    header: 'Endo',
-    accessorKey: 'payments.endogenous',
-    cell: ({ getValue }) => renderTickCross(getValue()),
-    headerTooltip: 'Reliance of native system payments on token as unit of account and medium of exchange.',
-    filterFn: truthyFilterFn,
-  },
-  {
-    id: 'payments.exogenous',
-    group: 'Payments',
-    header: 'Exo',
-    accessorKey: 'payments.exogenous',
-    cell: ({ getValue }) => renderTickCross(getValue()),
-    headerTooltip: 'Token is used as a unit of account and medium of exchange in external environments, this includes other dApps, blockchains, extensions of blockchains, such as layer two networks, and the real world.',
-    filterFn: truthyFilterFn,
-  },
-  {
-    id: 'collateral.endogenous',
-    group: 'Collateral',
-    header: 'Endo',
-    accessorKey: 'collateral.endogenous',
-    cell: ({ getValue }) => renderTickCross(getValue()),
-    headerTooltip: 'Token allows the holder to acquire financial leverage within a system or to cryptoeconomically secure the native system.',
-    filterFn: truthyFilterFn,
-  },
-  {
-    id: 'collateral.exogenous',
-    group: 'Collateral',
-    header: 'Exo',
-    accessorKey: 'collateral.exogenous',
-    cell: ({ getValue }) => renderTickCross(getValue()),
-    headerTooltip: 'Token is considered a general store of value and thus allows the holder to acquire financial leverage from an external system or to cryptoeconomically secure an external system.',
-    filterFn: truthyFilterFn,
-  },
-  {
     id: 'contribution.endogenous',
     group: 'Contribution',
     header: 'Endo',
@@ -166,24 +130,6 @@ const flatColumns = [
     accessorKey: 'contribution.exogenous',
     cell: ({ getValue }) => renderTickCross(getValue()),
     headerTooltip: 'Right to perform work or provide resources for an external system.',
-    filterFn: truthyFilterFn,
-  },
-  {
-    id: 'membership.endogenous',
-    group: 'Membership',
-    header: 'Endo',
-    accessorKey: 'membership.endogenous',
-    cell: ({ getValue }) => renderTickCross(getValue()),
-    headerTooltip: 'Access to features and benefits provided by system or community.',
-    filterFn: truthyFilterFn,
-  },
-  {
-    id: 'membership.exogenous',
-    group: 'Membership',
-    header: 'Exo',
-    accessorKey: 'membership.exogenous',
-    cell: ({ getValue }) => renderTickCross(getValue()),
-    headerTooltip: 'Access to features and benefits provided by external parties/systems.',
     filterFn: truthyFilterFn,
   },
   {
@@ -220,6 +166,60 @@ const flatColumns = [
     accessorKey: 'valueredistribution.exogenous',
     cell: ({ getValue }) => renderTickCross(getValue()),
     headerTooltip: 'Redistribution of value from external systems to token holders.',
+    filterFn: truthyFilterFn,
+  },
+  {
+    id: 'membership.endogenous',
+    group: 'Membership',
+    header: 'Endo',
+    accessorKey: 'membership.endogenous',
+    cell: ({ getValue }) => renderTickCross(getValue()),
+    headerTooltip: 'Access to features and benefits provided by system or community.',
+    filterFn: truthyFilterFn,
+  },
+  {
+    id: 'membership.exogenous',
+    group: 'Membership',
+    header: 'Exo',
+    accessorKey: 'membership.exogenous',
+    cell: ({ getValue }) => renderTickCross(getValue()),
+    headerTooltip: 'Access to features and benefits provided by external parties/systems.',
+    filterFn: truthyFilterFn,
+  },
+  {
+    id: 'payments.endogenous',
+    group: 'Payments',
+    header: 'Endo',
+    accessorKey: 'payments.endogenous',
+    cell: ({ getValue }) => renderTickCross(getValue()),
+    headerTooltip: 'Reliance of native system payments on token as unit of account and medium of exchange.',
+    filterFn: truthyFilterFn,
+  },
+  {
+    id: 'payments.exogenous',
+    group: 'Payments',
+    header: 'Exo',
+    accessorKey: 'payments.exogenous',
+    cell: ({ getValue }) => renderTickCross(getValue()),
+    headerTooltip: 'Token is used as a unit of account and medium of exchange in external environments, this includes other dApps, blockchains, extensions of blockchains, such as layer two networks, and the real world.',
+    filterFn: truthyFilterFn,
+  },
+  {
+    id: 'collateral.endogenous',
+    group: 'Collateral',
+    header: 'Endo',
+    accessorKey: 'collateral.endogenous',
+    cell: ({ getValue }) => renderTickCross(getValue()),
+    headerTooltip: 'Token allows the holder to acquire financial leverage within a system or to cryptoeconomically secure the native system.',
+    filterFn: truthyFilterFn,
+  },
+  {
+    id: 'collateral.exogenous',
+    group: 'Collateral',
+    header: 'Exo',
+    accessorKey: 'collateral.exogenous',
+    cell: ({ getValue }) => renderTickCross(getValue()),
+    headerTooltip: 'Token is considered a general store of value and thus allows the holder to acquire financial leverage from an external system or to cryptoeconomically secure an external system.',
     filterFn: truthyFilterFn,
   },
   {
@@ -560,6 +560,7 @@ function CryptoTable() {
     </table>
   </div>
 );
+
 }
 
 export default CryptoTable;

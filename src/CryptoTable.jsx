@@ -276,8 +276,8 @@ function CustomTableHeader({ columns, table }) {
   const topHeaderCells = [];
   const bottomHeaderCells = [];
 
-  // Render ungrouped columns.
-  ungroupedColumns.forEach(col => {
+  // Render ungrouped columns in the top header row.
+  ungroupedColumns.forEach((col, index, arr) => {
     let width;
     if (col.id === 'project') {
       width = `${PROJECT_WIDTH}px`;
@@ -301,24 +301,22 @@ function CustomTableHeader({ columns, table }) {
           backgroundColor: '#f2f2f2',
           textAlign: 'left',
           width: width,
-          // Ensure the project column has a left border
+          // For the project column, ensure left/right borders are explicit:
           ...(col.id === 'project' && { borderLeft: '2px solid #333', borderRight: '3px solid #333' }),
           cursor: 'pointer',
         }}
+        // If this cell is one of the last two in this row, add the class:
+        className={index >= arr.length - 2 ? "last-two-cell" : ""}
         onClick={() => {
           const currentSort = table.getState().sorting.find(s => s.id === col.id);
           if (!currentSort) {
-            // Not sorted: sort ascending.
             table.setSorting([{ id: col.id, desc: false }]);
           } else if (currentSort.desc === false) {
-            // Currently ascending: change to descending.
             table.setSorting([{ id: col.id, desc: true }]);
           } else {
-            // Currently descending: clear sorting (unsorted).
             table.setSorting([]);
           }
         }}
-        
       >
         <span className="tooltip-container">
           {col.header}{sortIndicator}
@@ -330,7 +328,7 @@ function CustomTableHeader({ columns, table }) {
     );
   });
 
-  // Build top header row for grouped columns.
+  // Build the top header row for grouped columns (similar logic applies).
   let i = 0;
   while (i < groupedColumns.length) {
     const currentGroup = groupedColumns[i].group;
@@ -358,8 +356,9 @@ function CustomTableHeader({ columns, table }) {
     i = j;
   }
 
-  // Build bottom header row for grouped columns.
-  groupedColumns.forEach(col => {
+  // For the bottom header row (grouped columns),
+  // we use a similar mapping. In this example, we assume each grouped column maps individually.
+  groupedColumns.forEach((col, index, arr) => {
     const count = groupCounts[col.group] || 1;
     const currentFilter = table.getColumn(col.id).getFilterValue();
     const filterIndicator = currentFilter ? (
@@ -376,6 +375,7 @@ function CustomTableHeader({ columns, table }) {
           width: `${GROUP_WIDTH / count}px`,
           cursor: 'pointer',
         }}
+        className={index >= arr.length - 2 ? "last-two-cell" : ""}
         onClick={() => {
           const current = table.getColumn(col.id).getFilterValue();
           table.getColumn(col.id).setFilterValue(current ? undefined : true);
@@ -398,6 +398,7 @@ function CustomTableHeader({ columns, table }) {
     </thead>
   );
 }
+
 
 // Main table component with multi-row pinning.
 function CryptoTable() {
@@ -490,7 +491,7 @@ function CryptoTable() {
     textAlign: 'center',
   };
 
-  const renderCell = (cell) => {
+  const renderCell = (cell, isTooltipLeft) => {
     const cellStyle = { ...baseTdStyle };
     
     // For the combined project column:
@@ -511,11 +512,12 @@ function CryptoTable() {
     }
     
     return (
-      <td key={cell.id} style={cellStyle}>
+      <td key={cell.id} style={cellStyle} className={isTooltipLeft ? "last-two-cell" : ""}>
         {flexRender(cell.column.columnDef.cell, cell.getContext())}
       </td>
     );
   };
+  
 
   const tableStyle = {
     width: '100%',
@@ -552,7 +554,7 @@ function CryptoTable() {
             }}
           >
             {row.getVisibleCells().map((cell, index, arr) =>
-              renderCell(cell, index === arr.length - 1)
+              renderCell(cell, index >= arr.length - 2)
             )}
           </tr>
         ))}

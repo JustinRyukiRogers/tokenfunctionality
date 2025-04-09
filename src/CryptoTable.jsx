@@ -92,8 +92,8 @@ const flatColumns = [
   {
     id: 'project',
     header: 'Project (Token)',
-    // Return a combined string that sorting will use (here we use only the project name)
-    accessorFn: row => row.name.toLowerCase(),
+    // Return both the project name and token ticker for sorting and global filtering.
+    accessorFn: row => `${row.name} ${row.token}`.toLowerCase(),
     cell: ({ row }) => {
       const { name, token } = row.original;
       return (
@@ -104,14 +104,14 @@ const flatColumns = [
       );
     },
     headerTooltip: 'Project name and token ticker',
+    // The filter function can remain as is, since it already combines name and token.
     filterFn: (row, columnId, filterValue) => {
       const { name, token } = row.original;
       const combined = `${name} ${token}`.toLowerCase();
       return combined.includes(filterValue.toLowerCase());
     },
-    // Optionally, you can add a sorting function if you need custom behavior.
-    // For simple alphanumeric sorting by name, the accessorFn above is sufficient.
   }
+  
   ,
   // ... The rest of your grouped columns remain unchanged:
   {
@@ -306,7 +306,7 @@ function CustomTableHeader({ columns, table }) {
           cursor: 'pointer',
         }}
         // If this cell is one of the last two in this row, add the class:
-        className={index >= arr.length - 2 ? "last-two-cell" : ""}
+        className={ (arr.length > 1 && index >= arr.length - 2) ? "last-two-cell" : "" }
         onClick={() => {
           const currentSort = table.getState().sorting.find(s => s.id === col.id);
           if (!currentSort) {

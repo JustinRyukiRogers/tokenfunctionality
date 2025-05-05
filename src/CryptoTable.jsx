@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import Modal from './Modal';
 import Papa from 'papaparse';
 import {
   useReactTable,
@@ -7,73 +8,17 @@ import {
   getSortedRowModel,
   flexRender,
 } from '@tanstack/react-table';
+import CustomTableHeader from './CustomTableHeader';
+import { renderTickCross } from './renderUtils';
+import groupDescriptions from './groupDescriptions';
+import { useTokenTableData } from './useTokenTableData';
+
 
 // Fixed width constants.
 const PROJECT_WIDTH = 300; // Increased width for the combined column
 const GROUP_WIDTH = 150;
 
-// Helper: Render tooltip text with line breaks (splitting on literal "\n")
-const renderTooltipText = (text) => {
-  const lines = text.split('\\n'); // Change to '\n' if your CSV contains actual newlines
-  return (
-    <>
-      {lines.map((line, index) => (
-        <React.Fragment key={index}>
-          {line}
-          {index < lines.length - 1 && <br />}
-        </React.Fragment>
-      ))}
-    </>
-  );
-};
 
-// Helper: Render an asset value with tooltip if it contains a pipe.
-const renderAsset = (value) => {
-  if (typeof value === 'string' && value.includes('|')) {
-    const [display, tooltip] = value.split('|').map(s => s.trim());
-    return (
-      <span className="tooltip-container">
-        {display}
-        <span className="tooltip-text">{renderTooltipText(tooltip)}</span>
-      </span>
-    );
-  }
-  return value;
-};
-
-// Helper: Render a tick if there is text; otherwise render nothing.
-const renderTickCross = (value) => {
-  if (typeof value !== 'string' || value.trim().length === 0) {
-    return <span>{''}</span>; // Blank if empty or not a string.
-  }
-  
-  if (value.includes('|')) {
-    const [symbol, tooltip] = value.split('|').map(s => s.trim());
-    if (symbol === '-') {
-      return (
-        <span className="tooltip-container">
-          <span className="hourglass">{'\u231B'}</span>
-          <span className="tooltip-text">{renderTooltipText(tooltip)}</span>
-        </span>
-      );
-    }
-     else {
-      return (
-        <span className="tooltip-container">
-          {'\u2713'}
-          <span className="tooltip-text">{renderTooltipText(tooltip)}</span>
-        </span>
-      );
-    }
-  } else {
-    return (
-      <span className="tooltip-container">
-        {'\u2713'}
-        <span className="tooltip-text">{renderTooltipText(value)}</span>
-      </span>
-    );
-  }
-};
 
 // Custom filter function: When filterValue is true, only include rows with truthy values.
 // Modification: Always include pinned rows.
@@ -152,7 +97,7 @@ const flatColumns = [
   },
   {
     id: 'valueredistribution.endogenous',
-    group: 'Passive Value Redistribution',
+    group: 'Value Distribution',
     header: 'Endo',
     accessorKey: 'valueredistribution.endogenous',
     cell: ({ getValue }) => renderTickCross(getValue()),
@@ -161,7 +106,7 @@ const flatColumns = [
   },
   {
     id: 'valueredistribution.exogenous',
-    group: 'Passive Value Redistribution',
+    group: 'Value Distribution',
     header: 'Exo',
     accessorKey: 'valueredistribution.exogenous',
     cell: ({ getValue }) => renderTickCross(getValue()),
@@ -265,200 +210,39 @@ enhancedColumns.forEach(col => {
   }
 });
 
-// Custom header renderer: Two header rows with filtering toggles.
-// Ungrouped columns ("Project (Token)") are rendered with rowSpan=2.
-// Grouped columns: The bottom header cells are clickable to toggle filtering on that column.
-// When a filter is active, a dot indicator is displayed.
-function CustomTableHeader({ columns, table }) {
-  const ungroupedColumns = columns.filter(col => !col.group);
-  const groupedColumns = columns.filter(col => col.group);
-
-  const topHeaderCells = [];
-  const bottomHeaderCells = [];
-
-  // Render ungrouped columns in the top header row.
-  ungroupedColumns.forEach((col, index, arr) => {
-    let width;
-    if (col.id === 'project') {
-      width = `${PROJECT_WIDTH}px`;
-    } else if (col.id === 'name') {
-      width = `${NAME_WIDTH}px`;
-    } else if (col.id === 'token') {
-      width = `${TOKEN_WIDTH}px`;
-    }
-    const currentSort = table.getState().sorting.find(s => s.id === col.id);
-    let sortIndicator = '';
-    if (currentSort) {
-      sortIndicator = currentSort.desc ? '' : '';
-    }
-    topHeaderCells.push(
-      <th
-        key={col.id}
-        rowSpan="2"
-        style={{
-          padding: '12px 8px',
-          border: '2px solid #333',
-          backgroundColor: '#f2f2f2',
-          textAlign: 'left',
-          width: width,
-          // For the project column, ensure left/right borders are explicit:
-          ...(col.id === 'project' && { borderLeft: '2px solid #333', borderRight: '3px solid #333' }),
-          cursor: 'pointer',
-        }}
-        // If this cell is one of the last two in this row, add the class:
-        className={ (arr.length > 1 && index >= arr.length - 2) ? "last-two-cell" : "" }
-        onClick={() => {
-          const currentSort = table.getState().sorting.find(s => s.id === col.id);
-          if (!currentSort) {
-            table.setSorting([{ id: col.id, desc: false }]);
-          } else if (currentSort.desc === false) {
-            table.setSorting([{ id: col.id, desc: true }]);
-          } else {
-            table.setSorting([]);
-          }
-        }}
-      >
-        <span className="tooltip-container">
-          {col.header}{sortIndicator}
-          <span className="tooltip-text">
-            {col.headerTooltip ? col.headerTooltip : col.accessorKey}
-          </span>
-        </span>
-      </th>
-    );
-  });
-
-  // Build the top header row for grouped columns (similar logic applies).
-  let i = 0;
-  while (i < groupedColumns.length) {
-    const currentGroup = groupedColumns[i].group;
-    let colSpan = 0;
-    let j = i;
-    while (j < groupedColumns.length && groupedColumns[j].group === currentGroup) {
-      colSpan++;
-      j++;
-    }
-    topHeaderCells.push(
-      <th
-        key={currentGroup + '-group'}
-        colSpan={colSpan}
-        style={{
-          padding: '12px 8px',
-          border: '2px solid #333',
-          backgroundColor: '#e0e0e0',
-          textAlign: 'center',
-          width: `${GROUP_WIDTH}px`,
-        }}
-      >
-        {currentGroup}
-      </th>
-    );
-    i = j;
-  }
-
-  // For the bottom header row (grouped columns),
-  // we use a similar mapping. In this example, we assume each grouped column maps individually.
-  groupedColumns.forEach((col, index, arr) => {
-    const count = groupCounts[col.group] || 1;
-    const currentFilter = table.getColumn(col.id).getFilterValue();
-    const filterIndicator = currentFilter ? (
-      <span className="filter-indicator">&#9679;</span>
-    ) : null;
-    bottomHeaderCells.push(
-      <th
-        key={col.id}
-        style={{
-          padding: '12px 8px',
-          border: '2px solid #333',
-          backgroundColor: '#f2f2f2',
-          textAlign: 'center',
-          width: `${GROUP_WIDTH / count}px`,
-          cursor: 'pointer',
-        }}
-        className={index >= arr.length - 2 ? "last-two-cell" : ""}
-        onClick={() => {
-          const current = table.getColumn(col.id).getFilterValue();
-          table.getColumn(col.id).setFilterValue(current ? undefined : true);
-        }}
-      >
-        <span className="tooltip-container">
-          {col.header}{filterIndicator}
-          <span className="tooltip-text">
-            {col.headerTooltip ? col.headerTooltip : col.accessorKey}
-          </span>
-        </span>
-      </th>
-    );
-  });
-
-  return (
-    <thead>
-      <tr>{topHeaderCells}</tr>
-      <tr>{bottomHeaderCells}</tr>
-    </thead>
-  );
-}
 
 
 // Main table component with multi-row pinning.
 function CryptoTable() {
-  const [data, setData] = useState([]);
   const [globalFilter, setGlobalFilter] = useState('');
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   // Change to an array for multiple pinned rows
   const [pinnedRowIds, setPinnedRowIds] = useState([]);
 
-  useEffect(() => {
-    fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vT8W60RuKy6njMwzDc6zhe7JBl5QuMZ-lTZRDfoj4YvHAG7c2GZlAhAfggRqpN-bziMmfft8I3t27Xa/pub?gid=0&single=true&output=csv')
-      .then(response => response.text())
-      .then(csvText => {
-        Papa.parse(csvText, {
-          header: true,
-          skipEmptyLines: true,
-          complete: (results) => {
-            const nestedData = results.data.map((row, index) => ({
-              id: index.toString(),
-              name: row.name,
-              token: row.token,
-              // NEW: Add pinned property to each row (default false)
-              pinned: false,
-              payments: {
-                endogenous: row["payments.endogenous"],
-                exogenous: row["payments.exogenous"],
-              },
-              collateral: {
-                endogenous: row["collateral.endogenous"],
-                exogenous: row["collateral.exogenous"],
-              },
-              contribution: {
-                endogenous: row["contribution.endogenous"],
-                exogenous: row["contribution.exogenous"],
-              },
-              membership: {
-                endogenous: row["membership.endogenous"],
-                exogenous: row["membership.exogenous"],
-              },
-              governance: {
-                endogenous: row["governance.endogenous"],
-                exogenous: row["governance.exogenous"],
-              },
-              valueredistribution: {
-                endogenous: row["valueredistribution.endogenous"],
-                exogenous: row["valueredistribution.exogenous"],
-              },
-              assetownership: {
-                endogenous: row["assetownership.endogenous"],
-                exogenous: row["assetownership.exogenous"],
-              },
-            }));
-            console.log(nestedData);
-            setData(nestedData);
-          },
-        });
-      })
-      .catch(error => console.error('Error fetching CSV:', error));
-  }, []);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState({ title: '', body: '' });
+
+  const [helpOpen, setHelpOpen] = useState(false);
+
+  const openHelp = () => setHelpOpen(true);
+  const closeHelp = () => setHelpOpen(false);
+
+  
+  const openModal = (title, body) => {
+    setModalContent({ title, body });
+    setModalOpen(true);
+  };
+  
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+  
+
+  const { data, loading, error, setData } = useTokenTableData(
+    'https://docs.google.com/spreadsheets/d/e/2PACX-1vT8W60RuKy6njMwzDc6zhe7JBl5QuMZ-lTZRDfoj4YvHAG7c2GZlAhAfggRqpN-bziMmfft8I3t27Xa/pub?gid=0&single=true&output=csv'
+  );
+  
 
   const columns = useMemo(() => enhancedColumns, []);
 
@@ -526,42 +310,81 @@ function CryptoTable() {
     borderBottom: '2px solid #333',
   };
 
+  if (loading) return <div>Loading token table...</div>;
+  if (error) return <div>Error loading data: {error.message}</div>;
+  
   return (
-  <div>
-    <input
-      className="search-bar"
-      value={globalFilter}
-      onChange={e => setGlobalFilter(e.target.value)}
-      placeholder="Search token..."
-    />
-    <table style={tableStyle}>
-      <CustomTableHeader columns={columns} table={table} />
-      <tbody>
-        {orderedRows.map(row => (
-          <tr 
-            key={row.id}
-            onClick={() => {
-              // Toggle pinned state on click by updating data.
-              setData(prevData =>
-                prevData.map(r =>
-                  r.id === row.original.id ? { ...r, pinned: !r.pinned } : r
-                )
-              );
-            }}
-            style={{
-              cursor: 'pointer',
-              backgroundColor: row.original.pinned ? '#fffae6' : 'inherit',
-            }}
-          >
-            {row.getVisibleCells().map((cell, index, arr) =>
-              renderCell(cell, index >= arr.length - 2)
-            )}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-);
+    <div>
+      {/* Search and Help Button Container */}
+      <div className="search-help-container">
+        <input
+          className="search-bar"
+          value={globalFilter}
+          onChange={e => setGlobalFilter(e.target.value)}
+          placeholder="Search token..."
+        />
+        <button className="help-button" onClick={openHelp}>?</button>
+      </div>
+  
+      {/* Table with clickable group headers */}
+      <table style={tableStyle}>
+        <CustomTableHeader 
+          columns={columns} 
+          table={table} 
+          groupDescriptions={groupDescriptions} 
+          openModal={openModal} 
+        />
+        <tbody>
+          {orderedRows.map(row => (
+            <tr 
+              key={row.id}
+              onClick={() => {
+                setData(prevData =>
+                  prevData.map(r =>
+                    r.id === row.original.id ? { ...r, pinned: !r.pinned } : r
+                  )
+                );
+              }}
+              style={{
+                cursor: 'pointer',
+                backgroundColor: row.original.pinned ? '#fffae6' : 'inherit',
+              }}
+            >
+              {row.getVisibleCells().map((cell, index, arr) =>
+                renderCell(cell, index >= arr.length - 2)
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+  
+      {/* Modal for group header descriptions */}
+      <Modal
+        isOpen={modalOpen}
+        onClose={closeModal}
+        title={modalContent.title}
+      >
+        {modalContent.body}
+      </Modal>
+  
+      {/* Help modal */}
+      <Modal
+        isOpen={helpOpen}
+        onClose={closeHelp}
+        title="How to Use This Dashboard"
+      >
+        <ul>
+          <li>Use the <strong>search bar</strong> to find tokens by name or ticker.</li>
+          <li>Click column group headers like <em>Governance</em> to read what they mean.</li>
+          <li>Click a row to pin it to the top of the table.</li>
+          <li>Hover over tick/cross icons to see tooltips with additional detail.</li>
+          <li>Click column headers to sort or toggle filters.</li>
+        </ul>
+      </Modal>
+    </div>
+  );
+  
+  
 
 }
 

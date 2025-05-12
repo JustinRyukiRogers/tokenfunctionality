@@ -61,7 +61,7 @@ const flatColumns = [
   // ... The rest of your grouped columns remain unchanged:
   {
     id: 'contribution.endogenous',
-    group: 'Contribution',
+    group: 'Service Provision',
     header: 'Endo',
     accessorKey: 'contribution.endogenous',
     cell: ({ getValue }) => renderTickCross(getValue()),
@@ -70,7 +70,7 @@ const flatColumns = [
   },
   {
     id: 'contribution.exogenous',
-    group: 'Contribution',
+    group: 'Service Provision',
     header: 'Exo',
     accessorKey: 'contribution.exogenous',
     cell: ({ getValue }) => renderTickCross(getValue()),

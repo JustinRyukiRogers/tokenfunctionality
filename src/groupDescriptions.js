@@ -1,7 +1,7 @@
 // src/descriptions.js
 
 const groupDescriptions = {
-    Contribution: "Contribution refers to the token's role in enabling the holder to contribute work or resources, either to the system itself (endogenous) or to external systems (exogenous).",
+    "Service Provision": "Service Provision refers to the token's role in enabling the holder to contribute work or resources, either to the system itself (endogenous) or to external systems (exogenous).",
     Governance: "Governance captures whether the token gives holders rights to participate in decisions, either within the system or in external systems.",
     "Value Distribution": "Value distribution denotes whether the token enables the holder to receive value from the system (endogenous) or external sources (exogenous).",
     Membership: "Membership indicates whether the token provides access or status within the community or ecosystem.",

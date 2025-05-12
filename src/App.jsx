@@ -1,9 +1,11 @@
 // export default App;
 import React, { useEffect } from 'react';
 import CryptoTable from './CryptoTable';
+import { inject } from '@vercel/analytics';
 
 function App() {
   useEffect(() => {
+    inject();
     const adjustContainerMargin = () => {
       const header = document.querySelector('.app-header');
       const container = document.querySelector('.app-container');

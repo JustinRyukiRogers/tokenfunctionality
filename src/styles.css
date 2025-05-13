@@ -4,7 +4,7 @@
 }
 
 /* Global font – using Futura (or adjust to your preference) */
-body, html, .app-container, .header-right {
+body, html, .app-container {
   font-family: "Raleway", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400; /* Regular */
@@ -19,7 +19,7 @@ html, body {
 
 /* Fixed header: stays at top */
 .app-header {
-  position: fixed;
+  position: relative;
   top: 0;
   left: 0;
   width: 100%;
@@ -36,8 +36,10 @@ html, body {
 
 /* Header text container: aligns title and subtitle on one line */
 .header-text {
-  display: flex;
-  align-items: baseline;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
 }
 
 /* Header title styling */
@@ -60,24 +62,35 @@ html, body {
 
 }
 
+.header-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
 
-/* Header Learn More button */
-.header-learn-more {
+.header-button {
   font-size: 1rem;
   color: white;
   text-decoration: none;
   padding: 8px 12px;
   border-radius: 4px;
-  margin-right: 5px;
+
   transition: background 0.2s ease, color 0.2s ease;
+  font-family: "Raleway", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400; /* Regular */
+  font-style: normal;
 }
+
 
 /* App container for content */
 .app-container {
-  margin: 160px 20px 20px; /* Increase top margin to account for taller header */
+  margin-top: 0 ; 
+  margin: 0 20px 20px;
   max-width: 5000px;
   padding: 0 10px;
 }
+
 
 /* Tooltip styles */
 .tooltip-container {
@@ -138,6 +151,8 @@ td, th {
   border: 1px solid #ddd;
   text-align: center;
   overflow: visible;
+  box-sizing: border-box;
+
 }
 
 /* Hover effect for table rows */
@@ -174,11 +189,13 @@ td.project-cell {
 
 /* Responsive adjustments for mobile */
 @media (max-width: 600px) {
-  .app-header {
-    flex-direction: row;
-    align-items: center;
-    padding: 10px;
+  .app-container {
+    margin-top: 0;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
   }
+
   
   .header-text h1 {
     font-size: 1.8rem;
@@ -190,7 +207,7 @@ td.project-cell {
   }
   
   .app-container {
-    margin: 80px 10px 10px;
+    margin: 20px 10px 10px;
   }
   
   table {
@@ -263,12 +280,14 @@ td.project-cell {
 }
 
 .search-help-container {
+  margin-top: 24px; /* add this */
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 10px;
   gap: 12px;
 }
+
 
 /* Circular help button */
 .help-button {
@@ -291,3 +310,4 @@ td.project-cell {
 .help-button:hover {
   background-color: #216897;
 }
+

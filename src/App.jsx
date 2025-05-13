@@ -11,7 +11,6 @@ function App() {
       const container = document.querySelector('.app-container');
       if (header && container) {
         // Set the container's top margin to the header's height plus extra spacing (e.g. 20px)
-        container.style.marginTop = `${header.offsetHeight + 20}px`;
       }
     };
 
@@ -25,7 +24,7 @@ function App() {
   return (
     <>
       <header className="app-header">
-      <a 
+        <a 
           className="header-link"
           href="https://justcryptoeconomics.com/" 
           target="_blank" 
@@ -36,14 +35,22 @@ function App() {
         <div className="header-text">
           <h1>Token Fundamentals</h1>
         </div>
-        <div className="header-right">
+        <div className="header-buttons">
           <a 
-            className="header-learn-more" 
+            className="header-button" 
             href="https://docs.google.com/document/d/e/2PACX-1vSig8ByfOoz8ITdn2jrg9XwqUMNHBUKODCqfJ59Y4YX8KZOalH08zgsNStNNExXvr6hGY-hwlSOPOth/pub" 
             target="_blank" 
             rel="noopener noreferrer"
           >
             Learn More
+          </a>
+          <a 
+            className="header-button" 
+            href="https://tally.so/r/3yGadX" 
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
+            Contact Us
           </a>
         </div>
       </header>
@@ -52,6 +59,7 @@ function App() {
       </div>
     </>
   );
+
 }
 
 export default App;

@@ -117,11 +117,8 @@ function CustomTableHeader({ columns, table, groupDescriptions, openModal }) {
           table.getColumn(col.id).setFilterValue(current ? undefined : true);
         }}
       >
-        <span className="tooltip-container">
+        <span>
           {col.header}{filterIndicator}
-          <span className="tooltip-text">
-            {col.headerTooltip || col.accessorKey}
-          </span>
         </span>
       </th>
     );

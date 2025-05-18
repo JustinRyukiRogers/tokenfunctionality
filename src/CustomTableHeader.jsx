@@ -3,7 +3,7 @@ import React from 'react';
 
 
 const PROJECT_WIDTH = 200;
-const GROUP_WIDTH = 150;
+const GROUP_WIDTH = 170;
 
 function CustomTableHeader({ columns, table, groupDescriptions, openModal }) {
   const ungroupedColumns = columns.filter(col => !col.group);
@@ -47,12 +47,8 @@ function CustomTableHeader({ columns, table, groupDescriptions, openModal }) {
           }
         }}
       >
-        <span className="tooltip-container">
           {col.header}
-          <span className="tooltip-text">
-            {col.headerTooltip || col.accessorKey}
-          </span>
-        </span>
+
       </th>
     );
   });
@@ -73,7 +69,7 @@ function CustomTableHeader({ columns, table, groupDescriptions, openModal }) {
         key={currentGroup + '-group'}
         colSpan={colSpan}
         style={{
-          padding: '12px 8px',
+          padding: '16px 8px',
           border: '2px solid #333',
           backgroundColor: '#e0e0e0',
           textAlign: 'center',

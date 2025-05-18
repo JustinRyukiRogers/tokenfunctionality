@@ -122,44 +122,6 @@ body, html, .app-container {
   background-color: #216897;
 }
 
-/* Tooltip */
-.tooltip-container {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-}
-
-.last-two-cell .tooltip-container .tooltip-text {
-  left: auto !important;
-  right: 110% !important;
-  z-index: 10000;
-}
-
-.tooltip-container .tooltip-text {
-  visibility: hidden;
-  opacity: 0;
-  pointer-events: none;
-  background-color: #0e3b5c;
-  color: #fff;
-  text-align: left;
-  padding: 5px 10px;
-  border-radius: 3px;
-  position: absolute;
-  z-index: 1000;
-  left: 130%;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 200px;
-  white-space: normal;
-  word-wrap: break-word;
-  transition: opacity 0.3s;
-
-}
-
-.tooltip-container:hover .tooltip-text {
-  visibility: visible;
-  opacity: 1;
-}
 
 .hourglass {
   filter: grayscale(100%) contrast(20%);

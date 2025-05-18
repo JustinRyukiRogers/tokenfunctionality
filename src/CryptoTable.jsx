@@ -16,9 +16,8 @@ import SplitTable from './SplitTable';
 
 
 
-
 const PROJECT_WIDTH = 200;
-const GROUP_WIDTH = 150;
+const GROUP_WIDTH = 170;
 
 function truthyFilterFn(row, columnId, filterValue) {
   if (row.original.pinned) return true;
@@ -54,7 +53,6 @@ const flatColumns = [
         </div>
       );
     },
-    headerTooltip: 'Project name and token ticker',
     // The filter function can remain as is, since it already combines name and token.
     filterFn: (row, columnId, filterValue) => {
       const { name, token } = row.original;

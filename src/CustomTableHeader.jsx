@@ -2,7 +2,7 @@
 import React from 'react';
 
 
-const PROJECT_WIDTH = 300;
+const PROJECT_WIDTH = 200;
 const GROUP_WIDTH = 150;
 
 function CustomTableHeader({ columns, table, groupDescriptions, openModal }) {

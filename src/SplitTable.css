@@ -47,7 +47,7 @@
 
 /* Vertical scroll only */
 .scroll-body {
-  max-height: 90vh;
+  max-height: 85vh;
   overflow-y: auto;
   overflow-x: hidden;
 

@@ -339,13 +339,17 @@ function CryptoTable() {
 
       <Modal isOpen={helpOpen} onClose={closeHelp} title="How to Use This Dashboard">
         <ul>
-          <li>Use the <strong>search bar</strong> to find tokens by name or ticker.</li>
-          <li>Click column group headers like <em>Governance</em> to read what they mean.</li>
-          <li>Click a row to pin it to the top of the table.</li>
-          <li>Hover over tick/cross icons to see tooltips with additional detail.</li>
-          <li>Click column headers to sort or toggle filters.</li>
+          <li>Use the <strong>search bar</strong> at the top to find tokens by name or ticker symbol.</li>
+          <li>Click on <strong>column group headers</strong> like <em>Governance</em> to see descriptions of what each group represents.</li>
+          <li>Click on any <strong>row</strong> to pin or unpin a token, keeping it fixed at the top of the table for quick reference.</li>
+          <li><strong>Hover over icons</strong> like ✅ or ⏳ to see detailed tooltips about that functionality.</li>
+          <li>A <strong>✅ (tick)</strong> means the feature is currently active or implemented for that project.</li>
+          <li>A <strong>⏳ (timer)</strong> indicates that the feature is planned but not yet live.</li>
+          <li>Click on <strong>column headers</strong> to sort data or toggle filter options for a more customized view.</li>
+          <li>Pinned rows stay visible even when filters are applied, so you can track your favorites across contexts.</li>
         </ul>
       </Modal>
+
     </div>
   );
 }

@@ -6,18 +6,25 @@ import TooltipPortal from './TooltipPortal';
  * Splits string on "\n" and renders with line breaks
  */
 export const renderTooltipText = (text) => {
-  const lines = text.split('\\n'); // Change to '\n' if your data includes actual newlines
+  const lines = text.split('\\n'); // Use '\n' if your data has real newlines
+
   return (
     <>
       {lines.map((line, index) => (
         <React.Fragment key={index}>
           {line}
-          {index < lines.length - 1 && <br />}
+          {index < lines.length - 1 && (
+            <>
+              <br />
+              <br />
+            </>
+          )}
         </React.Fragment>
       ))}
     </>
   );
 };
+
 
 
 /**

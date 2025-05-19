@@ -38,7 +38,7 @@ function App() {
         <div className="header-buttons">
           <a 
             className="header-button" 
-            href="https://docs.google.com/document/d/e/2PACX-1vSig8ByfOoz8ITdn2jrg9XwqUMNHBUKODCqfJ59Y4YX8KZOalH08zgsNStNNExXvr6hGY-hwlSOPOth/pub" 
+            href="https://justcryptoeconomics.com/writings/token-functionality-framework" 
             target="_blank" 
             rel="noopener noreferrer"
           >

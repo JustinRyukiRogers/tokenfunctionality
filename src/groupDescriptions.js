@@ -1,6 +1,6 @@
 const groupDescriptions = {
   "Service Provision": `
-    <p><strong>Service Provision</strong> refers to the token's role in enabling the holder to contribute work or resources.</p>
+    <p><strong>Service Provision</strong> functionality allows the holder to perform work or provide resources as a supply-side participant.</p>
     <ul>
       <li><strong>Endogenous:</strong> Right to perform work or provide resources for the native system.</li>
       <li><strong>Exogenous:</strong> Right to perform work or provide resources for an external system.</li>
@@ -8,7 +8,7 @@ const groupDescriptions = {
   `,
 
   Governance: `
-    <p><strong>Governance</strong> captures whether the token gives holders rights to participate in decisions.</p>
+    <p><strong>Governance</strong> functionality gives the holder control of or input to the decision-making processes regarding the system.</p>
     <ul>
       <li><strong>Endogenous:</strong> System governance rights exercised by the native token.</li>
       <li><strong>Exogenous:</strong> External system governance rights exercised by the native token.</li>
@@ -16,7 +16,7 @@ const groupDescriptions = {
   `,
 
   "Value Distribution": `
-    <p><strong>Value Distribution</strong> denotes whether the token enables the holder to receive value.</p>
+    <p><strong>Value Distribution</strong> functionality makes the holder eligible for a share of a system’s profit (surplus economic value). The right to surplus is not subject to meaningful system participation requirements or risk underwriting.</p>
     <ul>
       <li><strong>Endogenous:</strong> Redistribution of native system value to token holders.</li>
       <li><strong>Exogenous:</strong> Redistribution of value from external systems to token holders.</li>
@@ -24,7 +24,7 @@ const groupDescriptions = {
   `,
 
   Membership: `
-    <p><strong>Membership</strong> indicates whether the token provides access or status.</p>
+    <p><strong>Membership</strong> functionality gives the holder access to limited features and benefits by holding and/or locking tokens.</p>
     <ul>
       <li><strong>Endogenous:</strong> Access to features and benefits provided by system or community.</li>
       <li><strong>Exogenous:</strong> Access to features and benefits provided by external parties/systems.</li>
@@ -32,7 +32,7 @@ const groupDescriptions = {
   `,
 
   Payments: `
-    <p><strong>Payments</strong> refer to the token’s use as a medium of exchange or unit of account.</p>
+    <p><strong>Payments</strong> functionality allows the holder to use the token as a unit of account and a medium of exchange for transfers and transactions.</p>
     <ul>
       <li><strong>Endogenous:</strong> Reliance of native system payments on token as unit of account and medium of exchange.</li>
       <li><strong>Exogenous:</strong> Token is used as a unit of account and medium of exchange in external environments (e.g., dApps, L2s, real-world).</li>
@@ -40,18 +40,18 @@ const groupDescriptions = {
   `,
 
   Collateral: `
-    <p><strong>Collateral</strong> reflects whether the token can be used to secure assets or systems.</p>
+    <p><strong>Collateral</strong> functionality allows the holder to do one of two things: either acquire financial leverage or to secure a system through cryptoeconomic disincentives based on the token’s effectiveness as a long-term store of value.</p>
     <ul>
-      <li><strong>Endogenous:</strong> Acquire financial leverage within a system or cryptoeconomically secure the native system.</li>
-      <li><strong>Exogenous:</strong> Used as a general store of value or to secure an external system.</li>
+      <li><strong>Endogenous:</strong> Token allows the holder to acquire financial leverage within a system or to secure the native system cryptoeconomically.</li>
+      <li><strong>Exogenous:</strong> Token is considered a general store of value and thus allows the holder to acquire financial leverage from an external system or to secure an external system cryptoeconomically.</li>
     </ul>
   `,
 
   "Asset Ownership": `
-    <p><strong>Asset Ownership</strong> means the token confers claims on assets.</p>
+    <p><strong>Asset Ownership</strong> functionality confers a claim to the holder over physical or digital assets.</p>
     <ul>
-      <li><strong>Endogenous:</strong> Claim on assets controlled or managed by the system.</li>
-      <li><strong>Exogenous:</strong> Claim on assets managed outside the system.</li>
+      <li><strong>Endogenous:</strong> The token is a claim on assets controlled or managed by the system.</li>
+      <li><strong>Exogenous:</strong> The token is a claim on an asset other than that controlled or managed by the system.</li>
     </ul>
   `,
 };

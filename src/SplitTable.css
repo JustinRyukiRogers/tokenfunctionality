@@ -55,8 +55,12 @@
 
   scrollbar-gutter: stable;
   /* Trick: add right padding to hide the scrollbar overlay */
-  padding-right: 4.5px; /* leaves space for scrollbar without shrinking width */
-  margin-right: -20px; /* reclaims the space visually */
+
+}
+
+/* Chrome/Edge: force overlay scrollbar style */
+.scroll-body::-webkit-scrollbar {
+  width: 0px; /* or smaller */
 }
 
 .pinned-row {

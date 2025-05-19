@@ -12,18 +12,15 @@ import CustomTableHeader from './CustomTableHeader';
 import { renderTickCross } from './renderUtils';
 import groupDescriptions from './groupDescriptions';
 import { useTokenTableData } from './useTokenTableData';
-
-
-// Fixed width constants.
-const PROJECT_WIDTH = 300; // Increased width for the combined column
-const GROUP_WIDTH = 150;
+import SplitTable from './SplitTable';
 
 
 
-// Custom filter function: When filterValue is true, only include rows with truthy values.
-// Modification: Always include pinned rows.
+const PROJECT_WIDTH = 200;
+const GROUP_WIDTH = 170;
+
 function truthyFilterFn(row, columnId, filterValue) {
-  if (row.original.pinned) return true; // NEW: pinned rows bypass filtering
+  if (row.original.pinned) return true;
   const cellValue = row.getValue(columnId);
   if (filterValue) {
     return typeof cellValue === 'string' && cellValue.trim().length > 0;
@@ -42,13 +39,20 @@ const flatColumns = [
     cell: ({ row }) => {
       const { name, token } = row.original;
       return (
-        <div style={{ textAlign: 'left' }}>
+        <div
+          style={{
+            textAlign: 'left',
+            wordWrap: 'break-word',
+            overflowWrap: 'break-word',
+            whiteSpace: 'normal',
+            width: '100%' // ensures it respects the table cell width
+          }}
+        >
           <span style={{ fontWeight: 'bold' }}>{name}</span>{' '}
           <span style={{ color: 'grey', fontSize: '0.85rem' }}>{token}</span>
         </div>
       );
     },
-    headerTooltip: 'Project name and token ticker',
     // The filter function can remain as is, since it already combines name and token.
     filterFn: (row, columnId, filterValue) => {
       const { name, token } = row.original;
@@ -212,48 +216,35 @@ enhancedColumns.forEach(col => {
 
 
 
-// Main table component with multi-row pinning.
 function CryptoTable() {
   const [globalFilter, setGlobalFilter] = useState('');
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
-  // Change to an array for multiple pinned rows
   const [pinnedRowIds, setPinnedRowIds] = useState([]);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState({ title: '', body: '' });
-
   const [helpOpen, setHelpOpen] = useState(false);
 
   const openHelp = () => setHelpOpen(true);
   const closeHelp = () => setHelpOpen(false);
 
-  
   const openModal = (title, body) => {
     setModalContent({ title, body });
     setModalOpen(true);
   };
-  
-  const closeModal = () => {
-    setModalOpen(false);
-  };
-  
+  const closeModal = () => setModalOpen(false);
 
   const { data, loading, error, setData } = useTokenTableData(
     'https://docs.google.com/spreadsheets/d/e/2PACX-1vT8W60RuKy6njMwzDc6zhe7JBl5QuMZ-lTZRDfoj4YvHAG7c2GZlAhAfggRqpN-bziMmfft8I3t27Xa/pub?gid=0&single=true&output=csv'
   );
-  
 
-  const columns = useMemo(() => enhancedColumns, []);
+  const columns = useMemo(() => getEnhancedColumns(flatColumns), []);
 
   const table = useReactTable({
     data,
     columns,
-    state: {
-      globalFilter,
-      sorting,
-      columnFilters,
-    },
+    state: { globalFilter, sorting, columnFilters },
     onGlobalFilterChange: setGlobalFilter,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -262,12 +253,23 @@ function CryptoTable() {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  // Order rows: sort so that pinned rows (in data) always appear at the top.
   const allRows = table.getRowModel().rows;
-  const orderedRows = [...allRows].sort((a, b) => {
-    if (a.original.pinned === b.original.pinned) return 0;
-    return a.original.pinned ? -1 : 1;
-  });
+  const orderedRows = [...allRows]
+    .map(row => ({
+      ...row,
+      onClick: () => {
+        setData(prevData =>
+          prevData.map(r =>
+            r.id === row.original.id ? { ...r, pinned: !r.pinned } : r
+          )
+        );
+      }
+    }))
+    .sort((a, b) => {
+      if (a.original.pinned === b.original.pinned) return 0;
+      return a.original.pinned ? -1 : 1;
+    });
+
 
   const baseTdStyle = {
     padding: '12px 8px',
@@ -277,13 +279,10 @@ function CryptoTable() {
 
   const renderCell = (cell, isTooltipLeft) => {
     const cellStyle = { ...baseTdStyle };
-    
-    // For the combined project column:
     if (cell.column.id === 'project') {
       cellStyle.width = `${PROJECT_WIDTH}px`;
       cellStyle.borderLeft = '2px solid #333';
     }
-    
     if (cell.column.columnDef.group) {
       const count = groupCounts[cell.column.columnDef.group] || 1;
       cellStyle.width = `${GROUP_WIDTH / count}px`;
@@ -294,28 +293,24 @@ function CryptoTable() {
     if (cell.column.columnDef.lastInGroup) {
       cellStyle.borderRight = '2px solid #333';
     }
-    
     return (
-      <td key={cell.id} style={cellStyle} className={isTooltipLeft ? "last-two-cell" : ""}>
+      <td key={cell.id} style={cellStyle} className={isTooltipLeft ? 'last-two-cell' : ''}>
         {flexRender(cell.column.columnDef.cell, cell.getContext())}
       </td>
     );
   };
-  
 
   const tableStyle = {
     width: '100%',
-    borderCollapse: 'collapse',
-    fontFamily: 'inherit', // or directly 'Futura, sans-serif'
+    fontFamily: 'inherit',
     borderBottom: '2px solid #333',
   };
 
   if (loading) return <div>Loading token table...</div>;
   if (error) return <div>Error loading data: {error.message}</div>;
-  
+
   return (
     <div>
-      {/* Search and Help Button Container */}
       <div className="search-help-container">
         <input
           className="search-bar"
@@ -325,54 +320,24 @@ function CryptoTable() {
         />
         <button className="help-button" onClick={openHelp}>?</button>
       </div>
-  
-      {/* Table with clickable group headers */}
-      <table style={tableStyle}>
-        <CustomTableHeader 
-          columns={columns} 
-          table={table} 
-          groupDescriptions={groupDescriptions} 
-          openModal={openModal} 
-        />
-        <tbody>
-          {orderedRows.map(row => (
-            <tr 
-              key={row.id}
-              onClick={() => {
-                setData(prevData =>
-                  prevData.map(r =>
-                    r.id === row.original.id ? { ...r, pinned: !r.pinned } : r
-                  )
-                );
-              }}
-              style={{
-                cursor: 'pointer',
-                backgroundColor: row.original.pinned ? '#fffae6' : 'inherit',
-              }}
-            >
-              {row.getVisibleCells().map((cell, index, arr) =>
-                renderCell(cell, index >= arr.length - 2)
-              )}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-  
-      {/* Modal for group header descriptions */}
-      <Modal
-        isOpen={modalOpen}
-        onClose={closeModal}
-        title={modalContent.title}
-      >
+
+      <SplitTable
+        columns={columns}
+        rows={orderedRows}
+        renderCell={renderCell}
+        CustomTableHeader={CustomTableHeader}
+        table={table}
+        groupDescriptions={groupDescriptions}
+        openModal={openModal}
+      />
+
+
+
+      <Modal isOpen={modalOpen} onClose={closeModal} title={modalContent.title}>
         {modalContent.body}
       </Modal>
-  
-      {/* Help modal */}
-      <Modal
-        isOpen={helpOpen}
-        onClose={closeHelp}
-        title="How to Use This Dashboard"
-      >
+
+      <Modal isOpen={helpOpen} onClose={closeHelp} title="How to Use This Dashboard">
         <ul>
           <li>Use the <strong>search bar</strong> to find tokens by name or ticker.</li>
           <li>Click column group headers like <em>Governance</em> to read what they mean.</li>
@@ -383,9 +348,6 @@ function CryptoTable() {
       </Modal>
     </div>
   );
-  
-  
-
 }
 
 export default CryptoTable;

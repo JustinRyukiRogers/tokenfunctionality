@@ -1,0 +1,63 @@
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto; /* Shared scroll container */
+}
+
+/* Inner container that holds both tables */
+.scroll-container {
+  display: inline-block;
+  min-width: 100%;
+}
+
+/* Both header and body tables should match exactly */
+.header-table,
+.body-table {
+  table-layout: fixed;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.header-table th,
+.body-table td {
+  padding: 12px 8px;
+  border: 1px solid #ddd;
+  text-align: center;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.body-table {
+  border-bottom: 2px solid #000000; /* restores strong bottom line */
+
+}
+
+.body-table td {
+  position: relative; /* makes tooltip anchor to cell */
+  overflow: visible;  /* allows tooltip to spill out */
+  z-index: 0;         /* baseline layer */
+}
+.header-table {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* Vertical scroll only */
+.scroll-body {
+  max-height: 90vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  position: relative;
+
+  /* Trick: add right padding to hide the scrollbar overlay */
+  padding-right: 4.5px; /* leaves space for scrollbar without shrinking width */
+  margin-right: -20px; /* reclaims the space visually */
+}
+
+.pinned-row {
+  background-color: #d1edf5 !important;
+}

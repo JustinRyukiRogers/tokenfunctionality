@@ -1,40 +1,37 @@
+/* ===================== */
+/*        styles.css      */
+/* ===================== */
+
 /* Global Reset */
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
-/* Global font – using Futura (or adjust to your preference) */
 body, html, .app-container {
   font-family: "Raleway", sans-serif;
   font-optical-sizing: auto;
-  font-weight: 400; /* Regular */
+  font-weight: 400;
   font-style: normal;
-}
-
-/* Remove default margins */
-html, body {
   margin: 0;
   padding: 0;
 }
 
-/* Fixed header: stays at top */
+/* Header */
 .app-header {
   position: relative;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 1000;
-  background: linear-gradient(135deg,#0e3b5c, #0a3f6a  ); /* subtle gradient */
+  background: linear-gradient(135deg,#0e3b5c, #0a3f6a);
   color: white;
   padding: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);  /* subtle shadow for depth */
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
 }
 
-
-/* Header text container: aligns title and subtitle on one line */
 .header-text {
   position: absolute;
   left: 50%;
@@ -42,24 +39,15 @@ html, body {
   text-align: center;
 }
 
-/* Header title styling */
 .header-text h1 {
   margin: 0;
   font-size: 2rem;
   font-weight: 700;
 }
 
-/* Header subtitle styling */
-.header-text span {
-  font-size: 1rem;
-  margin-left: 10px;
-}
-
-/* Header link styling: image */
 .header-link img {
   height: 75px;
   margin-left: 5px;
-
 }
 
 .header-buttons {
@@ -74,101 +62,27 @@ html, body {
   text-decoration: none;
   padding: 8px 12px;
   border-radius: 4px;
-
   transition: background 0.2s ease, color 0.2s ease;
-  font-family: "Raleway", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400; /* Regular */
-  font-style: normal;
 }
 
-
-/* App container for content */
+/* Main container */
 .app-container {
-  margin-top: 0 ; 
-  margin: 0 20px 20px;
+  margin: 0 15px 20px;
+  margin-left: 20px;
   max-width: 5000px;
   padding: 0 10px;
 }
 
-
-/* Tooltip styles */
-.tooltip-container {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
+/* Search & Help */
+.search-help-container {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  gap: 12px;
 }
 
-.last-two-cell .tooltip-container .tooltip-text {
-  left: auto !important;
-  right: 110% !important;
-  z-index: 10000;
-}
-
-
-.tooltip-container .tooltip-text {
-  visibility: hidden;
-  opacity: 0;
-    pointer-events: none;
-
-  background-color: #0e3b5c;
-  color: #fff;
-  text-align: left;
-  padding: 5px;
-  padding-left: 10px;
-  border-radius: 3px;
-  position: absolute;
-  z-index: 1000;
-  left: 130%;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 200px;
-  white-space: normal;
-  word-wrap: break-word;
-  transition: opacity 0.3s;
-}
-.tooltip-container:hover .tooltip-text {
-  visibility: visible;
-  opacity: 1;
-}
-
-/* Hourglass styling (if used) */
-.hourglass {
-  filter: grayscale(100%) contrast(20%);
-  font-size: 14px;
-}
-
-/* Table styles */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-family: inherit;
-  border-bottom: 2px solid #155b8a;
-}
-
-td, th {
-  padding: 12px 8px;
-  border: 1px solid #ddd;
-  text-align: center;
-  overflow: visible;
-  box-sizing: border-box;
-
-}
-
-/* Hover effect for table rows */
-tbody tr:hover {
-  background-color: #f5f5f5;
-}
-
-/* Styling for combined project column cells */
-td.project-cell {
-  width: 300px;  /* Fixed width for project column */
-  border-left: 2px solid #155b8a;
-  text-align: left;
-}
-
-
-/* Search bar styling */
 .search-bar {
   width: 500px;
   padding: 10px 15px;
@@ -182,114 +96,11 @@ td.project-cell {
 }
 
 .search-bar:focus {
-  border-color: #0e3b5c;
-  background: #fff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* Responsive adjustments for mobile */
-@media (max-width: 600px) {
-  .app-container {
-    margin-top: 0;
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-bottom: 10px;
-  }
-
-  
-  .header-text h1 {
-    font-size: 1.8rem;
-  }
-  
-  .header-text span {
-    font-size: 0.9rem;
-    margin-left: 10px;
-  }
-  
-  .app-container {
-    margin: 20px 10px 10px;
-  }
-  
-  table {
-    font-size: 0.85rem;
-  }
-}
-
-.search-bar {
-  width: 500px;
-  padding: 10px 15px;
-  font-size: 16px;
-  margin-bottom: 10px;
-  border: 2px solid 0e3b5;
-  border-radius: 8px;
-  outline: none;
-  background: #f9f9f9;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-}
-
-.search-bar:focus {
   border-color: #155b8a;
   background: #fff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.page-title {
-  margin-top: 160px;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.page-title h1 {
-  margin: 0;
-  font-size: 2rem;
-  font-weight: 700;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
-}
-
-.modal-content {
-  background: white;
-  padding: 20px 30px;
-  border-radius: 8px;
-  padding-bottom: 40px;
-  max-width: 500px;
-  width: 90%;
-  position: relative;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-}
-
-.modal-close {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 1.5rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.search-help-container {
-  margin-top: 24px; /* add this */
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  gap: 12px;
-}
-
-
-/* Circular help button */
 .help-button {
   background-color: #0a3f6a;
   color: white;
@@ -311,3 +122,67 @@ td.project-cell {
   background-color: #216897;
 }
 
+
+.hourglass {
+  filter: grayscale(100%) contrast(20%);
+  font-size: 14px;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+td, th {
+  /* KEEP THIS */
+  border: none; /* You already set borders in SplitTable.css */
+  padding: 0;    /* Let SplitTable.css define padding */
+  text-align: center;
+  box-sizing: border-box;
+
+  /* REMOVE ANY MARGIN or border-spacing IF PRESENT HERE */
+}
+
+.modal-content {
+  background: white;
+  padding: 20px 30px 40px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .app-container {
+    margin: 20px 10px 10px;
+  }
+
+  .header-text h1 {
+    font-size: 1.8rem;
+  }
+
+  table {
+    font-size: 0.85rem;
+  }
+}

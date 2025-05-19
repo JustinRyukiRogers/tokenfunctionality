@@ -50,7 +50,7 @@ function App() {
             target="_blank" 
             rel="noopener noreferrer"
           >
-            Contact Us
+            Feedback
           </a>
         </div>
       </header>

@@ -1,5 +1,6 @@
 // export default App;
 import React, { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 import CryptoTable from './CryptoTable';
 import { inject } from '@vercel/analytics';
 
@@ -23,6 +24,16 @@ function App() {
 
   return (
     <>
+      <Helmet>
+        <title>Token Fundamentals | Just Cryptoeconomics</title>
+        <meta name="description" content="A structured methodology for classifying and analysing the roles that tokens play within cryptoeconomic systems." />
+        <meta name="robots" content="index, follow" />
+        <meta property="og:title" content="Token Fundamentals | Just Cryptoeconomics" />
+        <meta property="og:description" content="Interactive tools and frameworks to analyze token design and utility." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://app.justcryptoeconomics.com" />
+        <meta property="og:image" content="https://images.squarespace-cdn.com/content/v1/65b95c32618766635b132cf0/bbba13c7-6b38-4828-9a38-a8f3a592d20f/fotor-2024021221444.png" />
+      </Helmet>
       <header className="app-header">
         <a 
           className="header-link"
